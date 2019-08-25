@@ -77,7 +77,7 @@ Stakit.prototype.output = function (writer) {
 
     // plugins (post transformations)
     self._context._plugins.forEach(function (plugin) {
-      var value = plugin.fn(self._context, route, html)
+      var value = plugin.fn(context, route, html)
       if (value) {
         html = value
       }
