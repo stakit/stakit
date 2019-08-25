@@ -66,7 +66,7 @@ Stakit.prototype.output = function (writer) {
 
     // clone and update the context with the new state
     var context = Object.assign(self._context, {
-      state: Object.assign(self._context.state, view.state)
+      state: view.state ? Object.assign(self._context.state, view.state) : self._context.state
     })
 
     // documentify + handle transforms
