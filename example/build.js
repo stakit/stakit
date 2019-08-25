@@ -1,5 +1,6 @@
 var stakit = require('..')
 var { appendToBody, appendToHead, lang } = require('../utils/transforms')
+var path = require('path')
 
 var content = {
   '/': { title: 'index' },
@@ -7,6 +8,7 @@ var content = {
 }
 
 var kit = stakit()
+  .files([ path.join(__dirname, 'robots.txt') ])
   .state({ content: content })
   .pages(function (state) {
     return Object.keys(state.content)

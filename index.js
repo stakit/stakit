@@ -1,7 +1,9 @@
 var assert = require('assert')
+var concat = require('concat-stream')
+var path = require('path')
 var methods = require('./lib/methods')
 var document = require('./lib/document')
-var concat = require('concat-stream')
+var fileWriter = require('./utils/file-writer')
 
 module.exports = Stakit
 
@@ -42,7 +44,9 @@ Stakit.prototype.render = function (renderer) {
   return this
 }
 
-Stakit.prototype.output = function (builder) {
+Stakit.prototype.output = function (writer) {
+  writer = writer || fileWriter(path.join(process.cwd(), 'public'))
+
   var self = this
   // check all required values
   REQUIRED_VALUES.forEach(function (key) {
@@ -69,9 +73,22 @@ Stakit.prototype.output = function (builder) {
       stream.pipe(concat({ encoding: 'string' }, resolve))
     })
 
-    console.log(route)
-    console.log(html + '\n')
+    writer.write(route, html)
   })
+
+  // pass files to writer
+  if (writer.copy) {
+    this._context._files.forEach(function (path) {
+      if (typeof path === 'object') {
+        Object.keys(path).forEach(function (from) {
+          writer.copy(from, path[from])
+        })
+      } else {
+        // from === to
+        writer.copy(path, path)
+      }
+    })
+  }
 }
 
 // dynamically add helper methods
