@@ -20,5 +20,8 @@ var kit = stakit()
     }
   })
   .transform(lang, 'en')
+  .plugin(function (ctx, route, html) {
+    return (html + `<!-- ${route} -->`)
+  })
 
 kit.output(stakit.writeFiles('./public'))

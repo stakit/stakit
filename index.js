@@ -26,6 +26,7 @@ function Stakit () {
     state: {}, // state forwarded for the render method
     _files: [],
     _transforms: [],
+    _plugins: [],
     _html: TEMPLATE,
     _selector: 'body'
   }
@@ -72,6 +73,14 @@ Stakit.prototype.output = function (writer) {
     var html = await new Promise(function (resolve) {
       var stream = document(view.html, context)
       stream.pipe(concat({ encoding: 'string' }, resolve))
+    })
+
+    // plugins (post transformations)
+    self._context._plugins.forEach(function (plugin) {
+      var value = plugin.fn(self._context, route, html)
+      if (value) {
+        html = value
+      }
     })
 
     writer.write(route, html)
