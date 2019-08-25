@@ -3,9 +3,10 @@ var concat = require('concat-stream')
 var path = require('path')
 var methods = require('./lib/methods')
 var document = require('./lib/document')
-var fileWriter = require('./utils/file-writer')
+var fileWriter = require('./lib/file-writer')
 
 module.exports = Stakit
+module.exports.writeFiles = fileWriter // todo
 
 var REQUIRED_VALUES = [ '_pageReducer', '_renderer' ]
 

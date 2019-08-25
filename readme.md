@@ -1,14 +1,15 @@
 # stakit
-A toolkit for building static websites.
+A modular toolkit for building static websites.
 
 ## Ideas
 Just sketching out some example here:
 
 ```javascript
 var stakit = require('stakit')
-var { appendToHead, meta } = require('stakit/utils/transforms')
+var { appendToHead, meta } = require('stakit/transforms')
 var contentPrismic = require('@stakit/prismic')
 var renderChoo = require('@stakit/choo')
+var stateToHead = require('@stakit/choo/transforms')
 var monote = require('monote')
 
 var app = require('.')
@@ -26,10 +27,7 @@ var kit = stakit()
   // transforms
   .transform(appendToHead(`<link rel="stylesheet" href="/bundles/bundle.css">`))
   .transform(meta, { 'og:title': '' })
-  // post processing
-  .process(function (html) {
-    return html.replace(/hello world/g, 'hello guest')
-  })
+  .transform(stateToHead)
   // copy files
   .files([ 'robots.txt' ])
   .files({
@@ -38,7 +36,7 @@ var kit = stakit()
 
 if (process.argv.indexOf('build') !== -1) {
   // build
-  kit.output(stakit.toFiles)
+  kit.output(stakit.fileWriter('./public'))
 } else {
   // start dev server
   monote(kit, 8080)
@@ -52,6 +50,4 @@ if (process.argv.indexOf('build') !== -1) {
 
 ## TODO
 
-- files
-- output builder
 - `.textTransform`

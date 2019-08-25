@@ -1,7 +1,7 @@
 {
   "name": "stakit",
   "version": "0.0.0",
-  "description": "A toolkit for building static websites",
+  "description": "A modular toolkit for building static websites",
   "main": "index.js",
   "scripts": {
     "test": "npm run test:unit && standard",

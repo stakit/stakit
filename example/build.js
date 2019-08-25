@@ -1,5 +1,5 @@
 var stakit = require('..')
-var { appendToBody, appendToHead, lang } = require('../utils/transforms')
+var { appendToBody, appendToHead, lang } = require('../transforms')
 var path = require('path')
 
 var content = {
@@ -21,4 +21,4 @@ var kit = stakit()
   })
   .transform(lang, 'en')
 
-kit.output()
+kit.output(stakit.writeFiles('./public'))
