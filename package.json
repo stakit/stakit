@@ -1,0 +1,25 @@
+{
+  "name": "stakit",
+  "version": "0.0.0",
+  "description": "A toolkit for building static websites",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test:unit && standard",
+    "test:unit": "tape test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/stakit/stakit"
+  },
+  "author": "kodedninja",
+  "license": "ISC",
+  "devDependencies": {
+    "standard": "^14.0.2",
+    "tape": "^4.11.0"
+  },
+  "dependencies": {
+    "concat-stream": "^2.0.0",
+    "documentify": "^3.2.2",
+    "hstream": "^1.2.0"
+  }
+}
