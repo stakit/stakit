@@ -10,7 +10,7 @@ var content = {
 var kit = stakit()
   .files([ path.join(__dirname, 'robots.txt') ])
   .state({ content: content })
-  .pages(function (state) {
+  .routes(function (state) {
     return Object.keys(state.content)
   })
   .render(function (route, state) {

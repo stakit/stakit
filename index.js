@@ -34,8 +34,8 @@ function Stakit () {
   this._renderer = null
 }
 
-Stakit.prototype.pages = function (reducer) {
-  assert(typeof reducer === 'function', 'stakit.pages: reducer must be a function')
+Stakit.prototype.routes = function (reducer) {
+  assert(typeof reducer === 'function', 'stakit.routes: reducer must be a function')
   this._pageReducer = reducer
   return this
 }
@@ -58,9 +58,9 @@ Stakit.prototype.output = function (writer) {
   })
 
   // the state is already filled up, get the routes
-  var pages = this._pageReducer(this._context.state)
+  var routes = this._pageReducer(this._context.state)
 
-  pages.forEach(async function (route) {
+  routes.forEach(async function (route) {
     // get rendered view
     var view = self._renderer(route, self._context.state)
 

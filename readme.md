@@ -19,19 +19,16 @@ npm i stakit
 ```javascript
 var stakit = require('stakit')
 var { appendToHead } = require('stakit/transforms')
-var renderChoo = require('@stakit/choo')
-var stateToHead = require('@stakit/choo/transforms')
+var { render, hydrate } = require('@stakit/choo')
 
 var app = require('.')
 
 var kit = stakit()
-  // page generation
-  .pages(function (state) {
+  .routes(function (state) {
     return [ '/' ]
   })
-  // render
-  .render(renderChoo(app))
-  .transform(stateToHead)
+  .render(render(app))
+  .transform(hydrate)
 
 kit.output(stakit.writeFiles('./public'))
 ```
@@ -50,13 +47,13 @@ Stakit only handles `.html`, and does that right. You'll have to handle bundling
 Stakit is called programitically, not from the command-line, therefore you'll need a Javascript file (like `build.js`), where you require it. Afterwards you can initialize the kit with `stakit()` and then chain a couple of methods.
 
 Two methods must appear in the chain:
-- `pages(fn)`
+- `routes(fn)`
 - `render(fn)`
 
 All other methods are optional and called in the following order:
 
 1. `state` calls
-2. the single `pages` function
+2. the single `routes` function
 3. for every route:
     1. a single `render`
     2. all `transform` calls
@@ -84,11 +81,11 @@ kit.state({
 })
 ```
 
-### `kit.pages(pageReducer(state))`
-The `pageReducer` is a function that gets `context.state` as a parameter and returns an `Array` of strings / routes. These are the routes that stakit will call render on.
+### `kit.routes(routeReducer(state))`
+The `routeReducer` is a function that gets `context.state` as a parameter and returns an `Array` of strings / routes. These are the routes that stakit will call render on.
 
 ```javascript
-kit.pages(function (state) {
+kit.routes(function (state) {
   return Object.keys(state.content)
   // or statically
   return [ '/', '/about', '/blog' ]
@@ -96,7 +93,7 @@ kit.pages(function (state) {
 ```
 
 ### `kit.render(renderer(route, state))`
-Sets the renderer of the build. This is where the magic happens. The `renderer` will be called for every route returned by `pages`, with the shared state value.
+Sets the renderer of the build. This is where the magic happens. The `renderer` will be called for every route returned by `routes`, with the shared state value.
 
 It has to return an object with the following:
 ```javascript
