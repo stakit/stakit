@@ -127,7 +127,7 @@ It also accepts an object with the following format if you want to move the file
 ```
 
 ### `kit.output(writerObject)`
-Starts the build chain and ends it with passing all the routes to `writerObject.write(route, html)` and all the files that need to be copied to `writerObject.copy(from, to)`.
+Starts the build chain and ends it with passing all the routes to `writerObject.write(route, html)` and all the files that need to be copied to `writerObject.copy(from, to)`. Returns a `Promise` that waits for both writing out and copying the files.
 
 The default "writer", outputs the site to the ``./public`` directory.
 

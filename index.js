@@ -46,7 +46,7 @@ Stakit.prototype.render = function (renderer) {
   return this
 }
 
-Stakit.prototype.output = function (writer) {
+Stakit.prototype.output = async function (writer) {
   writer = writer || fileWriter(path.join(process.cwd(), 'public'))
 
   var self = this
@@ -60,7 +60,7 @@ Stakit.prototype.output = function (writer) {
   // the state is already filled up, get the routes
   var routes = this._pageReducer(this._context.state)
 
-  routes.forEach(async function (route) {
+  await Promise.all(routes.map(async function (route) {
     // get rendered view
     var view = self._renderer(route, self._context.state)
 
@@ -84,11 +84,11 @@ Stakit.prototype.output = function (writer) {
     })
 
     writer.write(route, html)
-  })
+  }))
 
   // pass files to writer
   if (writer.copy) {
-    this._context._files.forEach(function (path) {
+    await Promise.all(this._context._files.map(function (path) {
       if (typeof path === 'object') {
         Object.keys(path).forEach(function (from) {
           writer.copy(from, path[from])
@@ -97,7 +97,7 @@ Stakit.prototype.output = function (writer) {
         // from === to
         writer.copy(path, path)
       }
-    })
+    }))
   }
 }
 
