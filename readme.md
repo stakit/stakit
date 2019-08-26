@@ -47,7 +47,7 @@ There are many modular and lovely tools for bundling Javascript or transforming 
 Stakit only handles HTML, and does that right. You'll have to handle bundling your app and including the bundle if that's what you need. Following [Choo](https://github.com/choojs/choo#philosophy)'s philosophy, it's small, easy to use and understandable. It was designed with Choo in mind, but it should work with other isomorphic frameworks too.
 
 ## Usage
-Stakit is called programitically, not from the command-line, therefore you'll need a Javascript file (like `build.js`), where you require it. Afterwards you can initialize the kit with `stakit()` and the chain a couple of methods.
+Stakit is called programitically, not from the command-line, therefore you'll need a Javascript file (like `build.js`), where you require it. Afterwards you can initialize the kit with `stakit()` and then chain a couple of methods.
 
 Two methods must appear in the chain:
 - `pages(fn)`
@@ -61,7 +61,7 @@ state() -> pages() -> render() -> transform() -> plugin()
 End the chain with `kit.output()` to write out the files to the disk.
 
 ## API
-This section provides documentation on how each function in Choo works. It's intended to be a technical reference.
+This section provides documentation on how each function in Stakit works. It's intended to be a technical reference.
 
 ### `kit = stakit()`
 Initialize a new `kit` instance.
