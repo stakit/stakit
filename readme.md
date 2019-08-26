@@ -42,9 +42,9 @@ Generally, you do 2 things when generating a static site:
 - fill your **app** with some **content**
 - copy static **files**
 
-There are many modular and lovely tools for bundling Javascript or transforming CSS, stakit doesn't and will not try to be another one.
+There are many modular and lovely tools for bundling Javascript or transforming CSS, Stakit doesn't and will not try to be another one, or even try to be compatible with them.
 
-Stakit only handles HTML, and does that right. You'll have to handle bundling your app and including the bundle if that's what you need. Following [Choo](https://github.com/choojs/choo#philosophy)'s philosophy, it's small, easy to use and understandable. It was designed with Choo in mind, but it should work with other isomorphic frameworks too.
+Stakit only handles `.html`, and does that right. You'll have to handle bundling your app and including the bundle if that's what you need. Following [Choo](https://github.com/choojs/choo#philosophy)'s philosophy, it's small, understandable and easy to use. It was designed to work with Choo in the first place, but it should work with other isomorphic frameworks too, without any problems.
 
 ## Usage
 Stakit is called programitically, not from the command-line, therefore you'll need a Javascript file (like `build.js`), where you require it. Afterwards you can initialize the kit with `stakit()` and the chain a couple of methods.
@@ -54,9 +54,13 @@ Two methods must appear in the chain:
 - `render(fn)`
 
 All other methods are optional and called in the following order:
-```
-state() -> pages() -> render() -> transform() -> plugin()
-```
+
+1. `state` calls
+2. the single `pages` function
+3. for every route:
+    1. a single `render`
+    2. all `transform` calls
+    3. all `plugin` calls
 
 End the chain with `kit.output()` to write out the files to the disk.
 
@@ -133,7 +137,7 @@ The default "writer", outputs the site to the ``./public`` directory.
 See [Writers](#writers) for more information.
 
 ## Transforms
-Stakit uses [`documentify`](https://github.com/stackhtml/documentify) to build up the HTML. This is very powerful and can easily be modulized. The general format of a stakit transform is this:
+Stakit uses [`documentify`](https://github.com/stackhtml/documentify) to build up the HTML. This is very powerful and can easily be modulized. The general format of a stakit transform is:
 
 ```javascript
 function lang (context) {
@@ -145,11 +149,11 @@ function lang (context) {
 }
 ```
 
-[`hstream`](https://github.com/stackhtml/hstream) is a very good friend!
+Note: [`hstream`](https://github.com/stackhtml/hstream) is a very good friend!
 
-The `documentify` transform is nested in a function, so we can get the `context` if we need it.
+The `documentify` transform is nested in a function, so we can get the `context` when we need it and still doesn't complicate `documentify`'s API.
 
-Stakit includes the following built-in transforms:
+Stakit includes the following built-in transforms that you can get by `var transforms = require('stakit/transforms  ')`:
 - **lang**: `transform(lang, str)` - sets the language property of the `<html>` element to `str`
 - **prependToHead**: `transform(prependToHead, str)` - prepends `str` to the `<head>`
 - **appendToHead**: `transform(appendToHead, str)` - appends `str` to the `<head>`
@@ -168,12 +172,41 @@ stakit()
 ```
 
 ## Plugins
-`TODO`
+A plugin is a simple, general purpose function, called once for every route. Built-in its functionality is to modify the final HTML as a string, but you can do anything you want from logging to replacing the HTML with an empty string (you know, just in case).
+
+```javascript
+stakit()
+  .plugin(function (context, route, html) {
+    // a plugin that changes the html returns the new string
+    if (route === '/welcome') {
+      return html.replace(/hello/g, 'hi')
+    }
+  })
+  .plugin(function (context, route, html) {
+    // without changing the html
+    console.log(`${route} was built.`)
+  })
+```
 
 ## Writers
-`TODO`
+Writers handle the outputting of the final static files. This can be the simple outputting to the file-system, but it can get more complex too, like keeping the files in memory and serving from there, or putting them into a [Dat](https://github.com/datproject/dat) archive.
+
+As mentioned earlier they must implement 2 methods:
+- `write(route, html)` - save a specific `route` with the content `html`
+- `copy(from, to)` - copy a file / directory from the `from` path to the `output/<to>` path.
+
+It's recommended to clean up the directory before every build.
+
+Have a look at the built-in [`stakit.writeFiles`](https://github.com/stakit/stakit/blob/master/lib/file-writer.js) method as an example.
+
+That's all about writers.
+
+## See Also
+- [jalla](https://github.com/jalljs/jalla) - Lightning fast web compiler and server in one (also thanks for some code snippets!)
+- [documentify](https://github.com/stackhtml/documentify) - Modular HTML bundler
 
 ## TODO
 
-- api docs
 - tests
+- script, css transform
+- repo for other libraries (hstream, nanocontent for example)
