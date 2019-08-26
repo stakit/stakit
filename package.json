@@ -1,6 +1,6 @@
 {
   "name": "stakit",
-  "version": "0.0.1-0",
+  "version": "0.0.1",
   "description": "A modular toolkit for building static websites",
   "main": "index.js",
   "scripts": {
