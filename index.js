@@ -4,6 +4,7 @@ var path = require('path')
 var methods = require('./lib/methods')
 var middlewares = require('./lib/middlewares')
 var document = require('./lib/document')
+var utils = require('./lib/utils')
 
 module.exports = Stakit
 
@@ -65,45 +66,37 @@ Stakit.prototype.output = async function (writer) {
   // the state is already filled up, get the routes
   var routes = this._routesReducer(this._context.state)
 
-  await Promise.all(routes.map(async function (route) {
-    // get rendered view
-    var view = self._renderer(route, self._context.state)
+  await Promise.all(
+    routes.map(async function (route) {
+      // get rendered view
+      var view = self._renderer(route, self._context.state)
 
-    // clone and update the context with the new state
-    var context = Object.assign(self._context, {
-      state: view.state ? Object.assign(self._context.state, view.state) : self._context.state
+      // clone and update the context with the new state
+      var context = Object.assign(self._context, {
+        state: view.state ? Object.assign(self._context.state, view.state) : self._context.state
+      })
+
+      // documentify + handle transforms
+      var html = await new Promise(function (resolve) {
+        var stream = document(view.html, context)
+        stream.pipe(concat({ encoding: 'string' }, resolve))
+      })
+
+      // callbacks
+      self._context._callbacks.forEach(function (callback) {
+        var value = callback.fn(context, route, html)
+        if (value) {
+          html = value
+        }
+      })
+
+      writer.write(utils.newFile('string', path.join(route, 'index.html'), html))
     })
+  )
 
-    // documentify + handle transforms
-    var html = await new Promise(function (resolve) {
-      var stream = document(view.html, context)
-      stream.pipe(concat({ encoding: 'string' }, resolve))
-    })
-
-    // callbacks
-    self._context._callbacks.forEach(function (callback) {
-      var value = callback.fn(context, route, html)
-      if (value) {
-        html = value
-      }
-    })
-
-    writer.write(route, html)
-  }))
-
-  // pass files to writer
-  if (writer.copy) {
-    await Promise.all(this._context._files.map(function (path) {
-      if (typeof path === 'object') {
-        Object.keys(path).forEach(function (from) {
-          writer.copy(from, path[from])
-        })
-      } else {
-        // from === to
-        writer.copy(path, path)
-      }
-    }))
-  }
+  this._context._files.forEach(function (file) {
+    writer.write(file)
+  })
 }
 
 // dynamically add public methods

@@ -9,6 +9,9 @@ var content = {
 
 var kit = stakit()
   .use(stakit.state({ content: content }))
+  .use(stakit.copy({
+    [`${__dirname}/test.txt`]: 'asd/test.txt'
+  }))
   .routes(function (state) {
     return Object.keys(state.content)
   })
