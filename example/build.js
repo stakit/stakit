@@ -8,8 +8,7 @@ var content = {
 }
 
 var kit = stakit()
-  .files([ path.join(__dirname, 'robots.txt') ])
-  .state({ content: content })
+  .use(stakit.state({ content: content }))
   .routes(function (state) {
     return Object.keys(state.content)
   })

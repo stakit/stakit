@@ -6,9 +6,8 @@ var document = require('./lib/document')
 var fileWriter = require('./lib/file-writer')
 
 module.exports = Stakit
-module.exports.writeFiles = fileWriter // todo
 
-var REQUIRED_VALUES = [ '_pageReducer', '_renderer' ]
+var REQUIRED_VALUES = [ 'ucer', '_renderer' ]
 
 var TEMPLATE = `
   <!doctype html>
@@ -31,13 +30,13 @@ function Stakit () {
     _html: TEMPLATE,
     _selector: 'body'
   }
-  this._pageReducer = null
+  this._routesReducer = null
   this._renderer = null
 }
 
 Stakit.prototype.routes = function (reducer) {
   assert(typeof reducer === 'function', 'stakit.routes: reducer must be a function')
-  this._pageReducer = reducer
+  this._routesReducer = reducer
   return this
 }
 
@@ -64,7 +63,7 @@ Stakit.prototype.output = async function (writer) {
   })
 
   // the state is already filled up, get the routes
-  var routes = this._pageReducer(this._context.state)
+  var routes = this._routesReducer(this._context.state)
 
   await Promise.all(routes.map(async function (route) {
     // get rendered view
@@ -114,3 +113,15 @@ Object.keys(methods).forEach(function (key) {
     return this
   }
 })
+
+// Static functions and properties
+
+// Middleware to help assigning values to the state
+Stakit.state = function (extendState) {
+  assert(typeof extendState === 'object', 'stakit.state: extendState must be an object')
+  return function (ctx) {
+    ctx.state = Object.assign(ctx.state, extendState)
+  }
+}
+
+module.exports.writeFiles = fileWriter

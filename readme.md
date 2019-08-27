@@ -52,10 +52,9 @@ Two methods must appear in the chain:
 
 All other methods are optional and called in the following order:
 
-1. `state` calls
-2. middlewares applied by `use`
-3. the single `routes` function
-4. for every route:
+1. middlewares applied by `use`
+2. the single `routes` function
+3. for every route:
     1. a single `render`
     2. all `transform` calls
     3. all `plugin` calls
@@ -71,17 +70,6 @@ Initialize a new `kit` instance.
 ### `kit.html(template, selector)`
 Sets the starting HTML template and selector.
 
-### `kit.state(extendState)`
-Assigns the `extendState` object to `ctx.state`, which is passed to the renderer. You should store everything in the state that's needed by your app.
-
-```javascript
-kit.state({
-  content: {
-    '/': { title: 'home' }
-  }
-})
-```
-
 ### `kit.use(fn(context))`
 Pushes a middleware / plugin to the middlewares list, general purpose functions ran before the route generation. You can modify the context any way you want, from altering the `state` to installing `transform`s.
 
@@ -90,6 +78,8 @@ kit.use(function (ctx) {
   ctx._transforms.push(transform)
 })
 ```
+
+See [Middlewares](#middlewares) for more information.
 
 ### `kit.routes(routeReducer(state))`
 The `routeReducer` is a function that gets `context.state` as a parameter and returns an `Array` of strings / routes. These are the routes that stakit will call render on.
@@ -142,6 +132,13 @@ Starts the build chain and ends it with passing all the routes to `writerObject.
 The default "writer", outputs the site to the ``./public`` directory.
 
 See [Writers](#writers) for more information.
+
+## Middlewares
+Built-in middlewares:
+- `stakit.state(extendState)` - utility to help you with adding values to `context.state`
+    ```javascript
+    kit.use(stakit.state({ message: 'good morning!' }))
+    ```
 
 ## Transforms
 Stakit uses [`documentify`](https://github.com/stackhtml/documentify) to build up the HTML. This is very powerful and can easily be modulized. The general format of a stakit transform is:
