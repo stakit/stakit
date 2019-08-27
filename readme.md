@@ -39,27 +39,27 @@ Generally, you do 2 things when generating a static site:
 - fill your **app** with some **content**
 - copy static **files**
 
-There are many modular and lovely tools for bundling Javascript or transforming CSS, Stakit doesn't and will not try to be another one, or even try to be compatible with them.
+There are many modular (and lovely) tools for bundling Javascript or transforming CSS, Stakit is something similar, but for the full site,
+and especially focuses on HTML files.
 
-Stakit only handles `.html`, and does that right. You'll have to handle bundling your app and including the bundle if that's what you need. Following [Choo](https://github.com/choojs/choo#philosophy)'s philosophy, it's small, understandable and easy to use. It was designed to work with Choo in the first place, but it should work with other isomorphic frameworks too, without any problems.
+You'll have to handle the bundling of your app and including the bundle if that's what you need. Following [Choo](https://github.com/choojs/choo#philosophy)'s philosophy, it's small, understandable and easy to use. It was designed to work mainly with Choo, but it should work with other isomorphic frameworks too.
 
 ## Usage
-Stakit is called programitically, not from the command-line, therefore you'll need a Javascript file (like `build.js`), where you require it. Afterwards you can initialize the kit with `stakit()` and then chain a couple of methods.
+Stakit is called programmatically, not from the command-line, therefore you'll need a Javascript file (like `build.js`), where you require it. Afterwards you can initialize the kit with `stakit()` and then chain a couple of methods.
 
 Two methods must appear in the chain:
-- `routes(fn)`
-- `render(fn)`
+- [`routes(fn)`](#kitroutesroutereducerstate)
+- [`render(fn)`](#kitrenderrendererroute-state)
 
 All other methods are optional and called in the following order:
 
-1. middlewares applied by `use`
-2. the single `routes` function
+1. all the middlewares applied by `kit.use()`
+2. the applied [`routesReducer`](#kitroutesroutereducerstate) function
 3. for every route:
-    1. a single `render`
+    1. a single call to the applied [`renderer`](#kitrenderrendererroute-state)
     2. all `transform` calls
-    3. all `plugin` calls
 
-End the chain with `kit.output()` to write out the files to the disk.
+End the chain with `kit.output()`.
 
 ## API
 This section provides documentation on how each function in Stakit works. It's intended to be a technical reference.
@@ -82,7 +82,7 @@ kit.use(function (ctx) {
 See [Middlewares](#middlewares) for more information.
 
 ### `kit.routes(routeReducer(state))`
-The `routeReducer` is a function that gets `context.state` as a parameter and returns an `Array` of strings / routes. These are the routes that stakit will call render on.
+The `routeReducer` is a function that gets `context.state` as a parameter and returns an `Array` of strings / routes. These are the routes on which Stakit will call `render`.
 
 ```javascript
 kit.routes(function (state) {
@@ -93,9 +93,10 @@ kit.routes(function (state) {
 ```
 
 ### `kit.render(renderer(route, state))`
-Sets the renderer of the build. This is where the magic happens. The `renderer` will be called for every route returned by `routes`, with the shared state value.
+Sets the renderer of the build. This is where the magic happens. The `renderer` will be called for every route returned by `routes`.
 
-It has to return an object with the following:
+It has to return an object with the following values:
+
 ```javascript
 {
   html: string, // the result of the render
@@ -103,35 +104,55 @@ It has to return an object with the following:
 }
 ```
 
-Transforms and plugins will get the updated state.
+Transforms will receive the updated state returned here.
 
 ### `kit.transform(transformFn, opts)`
-Pushes a [`documentify`](https://github.com/stackhtml/documentify) transform to the list of transforms. They're called after the rendered content has been replaced in the HTML.
+Pushes a transform to the list of transforms. Stakit uses [`documentify`](https://github.com/stackhtml/documentify) and streams to build up the HTML.
+
+They're called after the rendered content has been replaced in the HTML.
 
 See [Transforms](#transforms) for more information.
 
 ### `kit.output(writerObject)`
-Starts the build chain and ends it with passing all the routes to `writerObject.write(route, html)` and all the files that need to be copied to `writerObject.copy(from, to)`. Returns a `Promise` that waits for both writing out and copying the files.
+Starts the build chain and ends it with passing all the routes to `writerObject.write({ destination, stream })`. Returns a `Promise` that waits until all files (routes and static) has been completely written.
 
-The default "writer", outputs the site to the ``./public`` directory.
+By default it uses a Writer that outputs the site to the ``./public`` directory.
 
 See [Writers](#writers) for more information.
 
 ## Middlewares
 Built-in middlewares:
-- `stakit.state(extendState)` - utility to help you with adding values to `context.state`
-    ```javascript
-    kit.use(stakit.state({ message: 'good morning!' }))
-    ```
 
-## Transforms
-Stakit uses [`documentify`](https://github.com/stackhtml/documentify) to build up the HTML. This is very powerful and can easily be modulized. The general format of a stakit transform is:
+### `stakit.state(extendState)`
+Utility to help you with adding values to `context.state`
 
 ```javascript
+kit.use(stakit.state({ message: 'good morning!' }))
+```
+
+### `stakit.copy(files)`
+Middleware for copying files to the output directory.
+
+```javascript
+// Copy files to the same location
+kit.use(stakit.copy([ 'robots.txt' ]))
+
+// Copy files to a different location within the output path
+kit.use(stakit.copy({
+  'robots.txt': 'robots.txt',
+  'sitemap.xml': 'sitemaps/sitemap.xml'
+}))
+```
+
+## Transforms
+[`Documentify`](https://github.com/stackhtml/documentify) is very powerful and can easily be modulized. The general format of a Stakit transform is:
+
+```javascript
+// wrapped in a function
 function lang (context) {
-  // return the transform
+  // return the documentify transform
   return function (lang) {
-    // return a documentify transform using hstream
+    // return a transform stream
     return hstream({ html: { lang: lang } })
   }
 }
@@ -139,46 +160,30 @@ function lang (context) {
 
 Note: [`hstream`](https://github.com/stackhtml/hstream) is a very good friend!
 
-The `documentify` transform is nested in a function, so we can get the `context` when we need it and still doesn't complicate `documentify`'s API.
+The `documentify` transform is wrapped in a function, so we can get the `context` when we need it, without messing with `documentify`'s API.
 
-Stakit includes the following built-in transforms that you can get by `var transforms = require('stakit/transforms  ')`:
-- **lang**: `transform(lang, str)` - sets the language property of the `<html>` element to `str`
-- **prependToHead**: `transform(prependToHead, str)` - prepends `str` to the `<head>`
-- **appendToHead**: `transform(appendToHead, str)` - appends `str` to the `<head>`
-- **prependToBody**: `transform(prependToBody, str)` - prepends `str` to the `<body>`
-- **appendToBody**: `transform(appendToBody, str)` - appends `str` to the `<body>`
-- **meta**: `transform(meta, obj)` - prepends `<meta>` tags to the head
-- **collect**: `transform(collect, fn(ctx, html))` - collects the complete HTML from the stream
-
-```javascript
-var { meta, prependToHead } = require('stakit/transforms')
-
-stakit()
-  .transform(prependToHead, `<link rel="stylesheet" src="/style.css">`)
-  .transform(meta, {
-    'og:title': 'Site'
-  })
-```
+See what transforms come with Stakit in [`docs/transforms.md`](https://github.com/stakit/stakit/blob/master/docs/transforms.md).
 
 ## Writers
-Writers handle the outputting of the final static files. This can be the simple outputting to the file-system, but it can get more complex too, like keeping the files in memory and serving from there, or putting them into a [Dat](https://github.com/datproject/dat) archive.
+Writers output the generated, transformed static files. This can vary from outputting to the file-system, to putting them into a [Dat](https://github.com/datproject/dat) archive.
 
-As mentioned earlier they must implement 2 methods:
-- `write(route, html)` - save a specific `route` with the content `html`
-- `copy(from, to)` - copy a file / directory from the `from` path to the `output/<to>` path.
+A writer must implement a method: `write`. For every file, including the generated pages + the files added to `context._files`, `writer.write` will be called with a file object. It should return a `Promise` that returns after the pipe was flushed (the file was completely written).
 
-It's recommended to clean up the directory before every build.
+A file object looks like this:
+
+```
+{
+  destination: string,
+  stream: Stream
+}
+```
+
+It's recommended to clean up the output directory before every build.
 
 Have a look at the built-in [`stakit.writeFiles`](https://github.com/stakit/stakit/blob/master/lib/file-writer.js) method as an example.
 
 That's all about writers.
 
 ## See Also
-- [jalla](https://github.com/jalljs/jalla) - Lightning fast web compiler and server in one (also thanks for some code snippets!)
+- [jalla](https://github.com/jalljs/jalla) - Lightning fast web compiler and server in one (also thanks for a lot of code snippets!)
 - [documentify](https://github.com/stackhtml/documentify) - Modular HTML bundler
-
-## TODO
-
-- tests
-- script, css transform
-- repo for other libraries (hstream, nanocontent for example)
