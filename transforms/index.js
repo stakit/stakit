@@ -6,6 +6,8 @@ module.exports = {
   lang,
   meta,
   collect,
+  includeScript,
+  includeStyle,
   prependToHead,
   appendToHead,
   prependToBody,
@@ -52,6 +54,18 @@ function collect (ctx) {
       cb(null, html)
       cb()
     }
+  }
+}
+
+function includeScript () {
+  return function (path) {
+    return hyperstream({ body: { _appendHtml: `<script src="${path}" defer></script>` } })
+  }
+}
+
+function includeStyle () {
+  return function (path) {
+    return hyperstream({ head: { _appendHtml: `<link rel="stylesheet" href="${path}">` } })
   }
 }
 

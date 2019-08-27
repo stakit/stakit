@@ -24,7 +24,21 @@ Appends `<meta>` tags to the `<head>`.
 ### `collect`
 `transform(collect, fn(ctx, html))`
 
-Collects the complete HTML from the stream and passes it to `fn` along with the full context.
+Collects the complete HTML from the stream and passes it to `fn` along with the full context. Put it as the last transform, in order to have the correct HTML.
+
+---
+
+### `includeScript`
+`transform(includeScipt, src)`
+
+Appends a `<script>` tag to the `<body>` with the passed `src`.
+
+---
+
+### `includeStyle`
+`transform(includeStyle, href)`
+
+Appends a `<link rel="stylesheet">` tag to the `<head>` with the passed `href`.
 
 ---
 

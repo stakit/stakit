@@ -1,5 +1,5 @@
 var stakit = require('..')
-var { appendToBody, appendToHead, lang, collect } = require('../transforms')
+var { lang, collect } = require('../transforms')
 var path = require('path')
 
 var content = {
