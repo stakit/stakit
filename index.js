@@ -66,6 +66,7 @@ Stakit.prototype.output = async function (writer) {
   // the state is already filled up, get the routes
   var routes = this._routesReducer(this._context.state)
 
+  // wait until all the pages are written
   await Promise.all(
     routes.map(async function (route) {
       // get rendered view
@@ -79,18 +80,18 @@ Stakit.prototype.output = async function (writer) {
       })
 
       // documentify + handle transforms
-      var html = await new Promise(function (resolve) {
-        var stream = document(view.html, context)
-        stream.pipe(concat({ encoding: 'string' }, resolve))
-      })
+      var stream = document(view.html, context)
 
-      writer.write(utils.newFile('string', path.join(route, 'index.html'), html))
+      await writer.write(utils.newFileStream(path.join(route, 'index.html'), stream))
     })
   )
 
-  this._context._files.forEach(function (file) {
-    writer.write(file)
-  })
+  // wait until all the files are written
+  await Promise.all(
+    this._context._files.map(async function (file) {
+      await writer.write(file)
+    })
+  )
 }
 
 // dynamically add public methods
@@ -101,7 +102,7 @@ Object.keys(methods).forEach(function (key) {
   }
 })
 
-// dynamically add static methods and properties
+// dynamically add middlewares as static methods
 Object.keys(middlewares).forEach(function (key) {
   Stakit[key] = middlewares[key]
 })
