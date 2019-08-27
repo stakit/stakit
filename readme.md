@@ -53,8 +53,9 @@ Two methods must appear in the chain:
 All other methods are optional and called in the following order:
 
 1. `state` calls
-2. the single `routes` function
-3. for every route:
+2. middlewares applied by `use`
+3. the single `routes` function
+4. for every route:
     1. a single `render`
     2. all `transform` calls
     3. all `plugin` calls
@@ -78,6 +79,15 @@ kit.state({
   content: {
     '/': { title: 'home' }
   }
+})
+```
+
+### `kit.use(fn(context))`
+Pushes a middleware / plugin to the middlewares list, general purpose functions ran before the route generation. You can modify the context any way you want, from altering the `state` to installing `transform`s.
+
+```javascript
+kit.use(function (ctx) {
+  ctx._transforms.push(transform)
 })
 ```
 
@@ -110,10 +120,10 @@ Pushes a [`documentify`](https://github.com/stackhtml/documentify) transform to 
 
 See [Transforms](#transforms) for more information.
 
-### `kit.plugin(fn(context, route, html))`
-Pushes a plugin to the list of post-processing plugins. They're called with the HTML string, after all the transforms had been applied.
+### `kit.callback(fn(context, route, html))`
+Pushes a callback to the list of callbacks. They're called with the HTML string, after all the transforms had been applied.
 
-See [Plugins](#plugins) for more information.
+See [Callbacks](#callbacks) for more information.
 
 ### `kit.files(filesArray | filesObject)`
 Appends a list of file paths to `context._files`. They want to be copied to the output directory.
@@ -168,18 +178,18 @@ stakit()
   })
 ```
 
-## Plugins
-A plugin is a simple, general purpose function, called once for every route. Built-in its functionality is to modify the final HTML as a string, but you can do anything you want from logging to replacing the HTML with an empty string (you know, just in case).
+## Callbacks
+A callback is a simple, general purpose function, called once for every route, after the HTML has been transformed to a string. Built-in its functionality is to modify the HTML, but you can do anything you want from logging to replacing the HTML with an empty string (you know, just in case).
 
 ```javascript
 stakit()
-  .plugin(function (context, route, html) {
+  .callback(function (context, route, html) {
     // a plugin that changes the html returns the new string
     if (route === '/welcome') {
       return html.replace(/hello/g, 'hi')
     }
   })
-  .plugin(function (context, route, html) {
+  .callback(function (context, route, html) {
     // without changing the html
     console.log(`${route} was built.`)
   })

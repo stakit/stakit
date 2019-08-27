@@ -25,6 +25,7 @@ function Stakit () {
   this._context = {
     state: {}, // state forwarded for the render method
     _files: [],
+    _middlewares: [],
     _transforms: [],
     _callbacks: [],
     _html: TEMPLATE,
@@ -55,6 +56,11 @@ Stakit.prototype.output = async function (writer) {
     if (self[key] === null) {
       throw new Error(`stakit.output: ${key} was not set, but it's required`)
     }
+  })
+
+  // run through all the middlewares
+  this._context._middlewares.forEach(function (fn) {
+    fn(self._context)
   })
 
   // the state is already filled up, get the routes
