@@ -18,7 +18,6 @@
     "tape": "^4.11.0"
   },
   "dependencies": {
-    "concat-stream": "^2.0.0",
     "documentify": "^3.2.2",
     "hstream": "^1.2.0",
     "mkdirp": "^0.5.1",

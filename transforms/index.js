@@ -1,5 +1,4 @@
 var hyperstream = require('hstream')
-var { Readable } = require('stream')
 var through = require('through2')
 
 module.exports = {

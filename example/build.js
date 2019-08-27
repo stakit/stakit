@@ -1,6 +1,5 @@
 var stakit = require('..')
 var { lang, collect } = require('../transforms')
-var path = require('path')
 
 var content = {
   '/': { title: 'index' },

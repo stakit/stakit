@@ -1,5 +1,4 @@
 var assert = require('assert')
-var concat = require('concat-stream')
 var path = require('path')
 var methods = require('./lib/methods')
 var middlewares = require('./lib/middlewares')
@@ -8,7 +7,7 @@ var utils = require('./lib/utils')
 
 module.exports = Stakit
 
-var REQUIRED_VALUES = [ 'ucer', '_renderer' ]
+var REQUIRED_VALUES = ['_routesReducer', '_renderer']
 
 var TEMPLATE = `
   <!doctype html>
@@ -20,7 +19,6 @@ var TEMPLATE = `
 
 function Stakit () {
   if (!(this instanceof Stakit)) return new Stakit()
-  var self = this
 
   this._context = {
     state: {}, // state forwarded for the render method
@@ -48,7 +46,7 @@ Stakit.prototype.render = function (renderer) {
 }
 
 Stakit.prototype.output = async function (writer) {
-  writer = writer || fileWriter(path.join(process.cwd(), 'public'))
+  writer = writer || middlewares.writeFiles(path.join(process.cwd(), 'public'))
 
   var self = this
   // check all required values
