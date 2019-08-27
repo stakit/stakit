@@ -2,8 +2,8 @@ var assert = require('assert')
 var concat = require('concat-stream')
 var path = require('path')
 var methods = require('./lib/methods')
+var middlewares = require('./lib/middlewares')
 var document = require('./lib/document')
-var fileWriter = require('./lib/file-writer')
 
 module.exports = Stakit
 
@@ -106,7 +106,7 @@ Stakit.prototype.output = async function (writer) {
   }
 }
 
-// dynamically add helper methods
+// dynamically add public methods
 Object.keys(methods).forEach(function (key) {
   Stakit.prototype[key] = function (...args) {
     methods[key](this._context, ...args)
@@ -114,14 +114,7 @@ Object.keys(methods).forEach(function (key) {
   }
 })
 
-// Static functions and properties
-
-// Middleware to help assigning values to the state
-Stakit.state = function (extendState) {
-  assert(typeof extendState === 'object', 'stakit.state: extendState must be an object')
-  return function (ctx) {
-    ctx.state = Object.assign(ctx.state, extendState)
-  }
-}
-
-module.exports.writeFiles = fileWriter
+// dynamically add static methods and properties
+Object.keys(middlewares).forEach(function (key) {
+  Stakit[key] = middlewares[key]
+})

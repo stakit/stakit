@@ -115,17 +115,6 @@ Pushes a callback to the list of callbacks. They're called with the HTML string,
 
 See [Callbacks](#callbacks) for more information.
 
-### `kit.files(filesArray | filesObject)`
-Appends a list of file paths to `context._files`. They want to be copied to the output directory.
-
-It also accepts an object with the following format if you want to move the file to a different path within the output directory:
-```
-{
-  from: to,
-  from: to
-}
-```
-
 ### `kit.output(writerObject)`
 Starts the build chain and ends it with passing all the routes to `writerObject.write(route, html)` and all the files that need to be copied to `writerObject.copy(from, to)`. Returns a `Promise` that waits for both writing out and copying the files.
 
