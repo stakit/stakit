@@ -1,5 +1,5 @@
 var stakit = require('..')
-var { appendToBody, appendToHead, lang } = require('../transforms')
+var { appendToBody, appendToHead, lang, collect } = require('../transforms')
 var path = require('path')
 
 var content = {
@@ -22,8 +22,8 @@ var kit = stakit()
     }
   })
   .transform(lang, 'en')
-  .callback(function (ctx, route, html) {
-    return (html + `<!-- ${route} -->`)
+  .transform(collect, function (ctx, html) {
+    console.log(html)
   })
 
 kit.output(stakit.writeFiles('./public'))

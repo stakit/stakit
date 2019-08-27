@@ -1,4 +1,6 @@
 var hyperstream = require('hstream')
+var { Readable } = require('stream')
+var through = require('through2')
 
 module.exports = {
   lang,
@@ -6,7 +8,8 @@ module.exports = {
   appendToHead,
   prependToBody,
   appendToBody,
-  meta
+  meta,
+  collect
 }
 
 function lang () {
@@ -50,5 +53,26 @@ function meta () {
       })
     }
     return prependToHead()(tags.join('\n'))
+  }
+}
+
+function collect (ctx) {
+  return function (callback) {
+    var html = ''
+
+    return through(collect, compose)
+
+    // collect html but push nothing
+    function collect (chunk, enc, cb) {
+      html += chunk
+      cb(null)
+    }
+
+    // call the callback with complete HTML
+    function compose (cb) {
+      callback(ctx, html)
+      cb(null, html)
+      cb()
+    }
   }
 }

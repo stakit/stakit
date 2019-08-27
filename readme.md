@@ -110,11 +110,6 @@ Pushes a [`documentify`](https://github.com/stackhtml/documentify) transform to 
 
 See [Transforms](#transforms) for more information.
 
-### `kit.callback(fn(context, route, html))`
-Pushes a callback to the list of callbacks. They're called with the HTML string, after all the transforms had been applied.
-
-See [Callbacks](#callbacks) for more information.
-
 ### `kit.output(writerObject)`
 Starts the build chain and ends it with passing all the routes to `writerObject.write(route, html)` and all the files that need to be copied to `writerObject.copy(from, to)`. Returns a `Promise` that waits for both writing out and copying the files.
 
@@ -153,6 +148,7 @@ Stakit includes the following built-in transforms that you can get by `var trans
 - **prependToBody**: `transform(prependToBody, str)` - prepends `str` to the `<body>`
 - **appendToBody**: `transform(appendToBody, str)` - appends `str` to the `<body>`
 - **meta**: `transform(meta, obj)` - prepends `<meta>` tags to the head
+- **collect**: `transform(collect, fn(ctx, html))` - collects the complete HTML from the stream
 
 ```javascript
 var { meta, prependToHead } = require('stakit/transforms')
@@ -161,23 +157,6 @@ stakit()
   .transform(prependToHead, `<link rel="stylesheet" src="/style.css">`)
   .transform(meta, {
     'og:title': 'Site'
-  })
-```
-
-## Callbacks
-A callback is a simple, general purpose function, called once for every route, after the HTML has been transformed to a string. Built-in its functionality is to modify the HTML, but you can do anything you want from logging to replacing the HTML with an empty string (you know, just in case).
-
-```javascript
-stakit()
-  .callback(function (context, route, html) {
-    // a plugin that changes the html returns the new string
-    if (route === '/welcome') {
-      return html.replace(/hello/g, 'hi')
-    }
-  })
-  .callback(function (context, route, html) {
-    // without changing the html
-    console.log(`${route} was built.`)
   })
 ```
 

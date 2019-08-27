@@ -27,10 +27,10 @@ function Stakit () {
     _files: [],
     _middlewares: [],
     _transforms: [],
-    _callbacks: [],
     _html: TEMPLATE,
     _selector: 'body'
   }
+
   this._routesReducer = null
   this._renderer = null
 }
@@ -80,14 +80,6 @@ Stakit.prototype.output = async function (writer) {
       var html = await new Promise(function (resolve) {
         var stream = document(view.html, context)
         stream.pipe(concat({ encoding: 'string' }, resolve))
-      })
-
-      // callbacks
-      self._context._callbacks.forEach(function (callback) {
-        var value = callback.fn(context, route, html)
-        if (value) {
-          html = value
-        }
       })
 
       writer.write(utils.newFile('string', path.join(route, 'index.html'), html))
