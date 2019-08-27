@@ -20,7 +20,7 @@ var kit = stakit()
     }
   })
   .transform(lang, 'en')
-  .plugin(function (ctx, route, html) {
+  .callback(function (ctx, route, html) {
     return (html + `<!-- ${route} -->`)
   })
 

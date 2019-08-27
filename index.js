@@ -26,7 +26,7 @@ function Stakit () {
     state: {}, // state forwarded for the render method
     _files: [],
     _transforms: [],
-    _plugins: [],
+    _callbacks: [],
     _html: TEMPLATE,
     _selector: 'body'
   }
@@ -75,9 +75,9 @@ Stakit.prototype.output = async function (writer) {
       stream.pipe(concat({ encoding: 'string' }, resolve))
     })
 
-    // plugins (post transformations)
-    self._context._plugins.forEach(function (plugin) {
-      var value = plugin.fn(context, route, html)
+    // callbacks
+    self._context._callbacks.forEach(function (callback) {
+      var value = callback.fn(context, route, html)
       if (value) {
         html = value
       }
