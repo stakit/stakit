@@ -72,8 +72,10 @@ Stakit.prototype.output = async function (writer) {
       var view = self._renderer(route, self._context.state)
 
       // clone and update the context with the new state
-      var context = Object.assign(self._context, {
-        state: view.state ? Object.assign(self._context.state, view.state) : self._context.state
+      var context = Object.assign({}, self._context)
+      context = Object.assign(context, {
+        state: view.state ? Object.assign(self._context.state, view.state) : self._context.state,
+        route: route
       })
 
       // documentify + handle transforms

@@ -23,6 +23,7 @@ var kit = stakit()
   })
   .transform(lang, 'en')
   .transform(collect, function (ctx, html) {
+    console.log(ctx.route)
     console.log(html)
   })
 
