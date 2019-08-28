@@ -18,8 +18,7 @@ npm i stakit
 ## Example
 ```javascript
 var stakit = require('stakit')
-var { appendToHead } = require('stakit/transforms')
-var { render, hydrate } = require('@stakit/choo')
+var { render, hydrate } = require('stakit-choo')
 
 var app = require('.')
 
