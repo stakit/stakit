@@ -80,7 +80,7 @@ Stakit.prototype.output = async function (writer) {
       // documentify + handle transforms
       var stream = document(view.html, context)
 
-      await writer.write(utils.newFileStream(path.join(route, 'index.html'), stream))
+      await writer.write(utils.newFileStream(null, path.join(route, 'index.html'), stream))
     })
   )
 
