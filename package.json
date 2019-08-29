@@ -4,7 +4,7 @@
   "description": "A modular toolkit for building static websites",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test:unit && standard",
+    "test": "standard && npm run test:unit",
     "test:unit": "tape test/**/*.js"
   },
   "repository": {
