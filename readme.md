@@ -18,8 +18,7 @@ npm i stakit
 ## Example
 ```javascript
 var stakit = require('stakit')
-var { appendToHead } = require('stakit/transforms')
-var { render, hydrate } = require('@stakit/choo')
+var { render, hydrate } = require('stakit-choo')
 
 var app = require('.')
 
@@ -186,5 +185,5 @@ Have a look at the built-in [`stakit.writeFiles`](https://github.com/stakit/stak
 That's all about writers.
 
 ## See Also
-- [jalla](https://github.com/jalljs/jalla) - Lightning fast web compiler and server in one (also thanks for a lot of code snippets!)
+- [jalla](https://github.com/jallajs/jalla) - Lightning fast web compiler and server in one (also thanks for a lot of code snippets!)
 - [documentify](https://github.com/stackhtml/documentify) - Modular HTML bundler
