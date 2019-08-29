@@ -1,7 +1,5 @@
 # stakit
-A modular toolkit for building static websites.
-
-**Currently in early WIP / planning state.**
+**A modular toolkit for building static websites**
 
 <a href="https://nodejs.org/api/documentation.html#documentation_stability_index">
   <img src="https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square" alt="Stability"/>
@@ -9,6 +7,16 @@ A modular toolkit for building static websites.
 <a href="https://www.npmjs.com/package/stakit">
   <img src="https://img.shields.io/npm/v/stakit.svg?style=flat-square" alt="NPM version"/>
 </a>
+
+Stakit is a framework that helps you compose powerful build chains for static-websites without breaking a sweat. It's minimal and modular, uses streams and the [Stakit toolkit](https://github.com/stakit) has a bunch of plugins and transforms that you can use.
+
+_Stakit is still early in development, but you can take it and use it to see if you should care about it or not._
+
+## Features
+- **modular**: you never have what you don't need, but you can `npm install` it
+- **small api**: it only has 7 core methods, only 3 of them you must use
+- **no constrainst**: you are never limited by the features and templates of a static-site generator
+- **fast, memory efficient**: heavily using streams
 
 ## Installation
 ```
