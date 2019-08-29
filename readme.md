@@ -8,6 +8,8 @@
   <img src="https://img.shields.io/npm/v/stakit.svg?style=flat-square" alt="NPM version"/>
 </a>
 
+<br />
+
 Stakit is a framework that helps you compose powerful build chains for static-websites without breaking a sweat. It's minimal and modular, uses streams and the [Stakit toolkit](https://github.com/stakit) has a bunch of plugins and transforms that you can use.
 
 _Stakit is still early in development, but you can take it and use it to see if you should care about it or not._
