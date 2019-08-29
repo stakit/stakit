@@ -173,6 +173,7 @@ A file object looks like this:
 
 ```
 {
+  source: null | string,
   destination: string,
   stream: Stream
 }
