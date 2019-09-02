@@ -12,14 +12,14 @@
 
 <br />
 
-Stakit is a framework that helps you compose powerful build chains for static-websites without breaking a sweat. It's minimal and modular, uses streams and the [Stakit toolkit](https://github.com/stakit) has a bunch of plugins and transforms that you can use.
+Stakit is a framework that helps you compose powerful build pipelines for static-websites without breaking a sweat. It's minimal and modular, uses streams and the [Stakit toolkit](https://github.com/stakit) has a bunch of plugins and transforms that you can use.
 
 _Stakit is still early in development, but you can take it and use it to see if you should care about it or not._
 
 ## Features
+- **framework agnostic**: works with any framework that can output a string
 - **modular**: you never have what you don't need, but you can `npm install` it
 - **small api**: it only has 7 core methods, only 3 of them you must use
-- **framework agnostic**: works with any framework that can output a string
 - **no constraints**: you are never limited by the features and templates of a static-site generator
 - **fast, memory efficient**: heavily using streams
 
@@ -59,7 +59,7 @@ You'll have to handle the bundling of your app and including the bundle if that'
 ## Usage
 Stakit is called programmatically, not from the command-line, therefore you'll need a Javascript file (like `build.js`), where you require it. Afterwards you can initialize the kit with `stakit()` and then chain a couple of methods.
 
-Two methods must appear in the chain:
+Two methods must appear in the pipeline:
 - [`routes(fn)`](#kitroutesroutereducerstate)
 - [`render(fn)`](#kitrenderrendererroute-state)
 
@@ -71,7 +71,7 @@ All other methods are optional and called in the following order:
     1. a single call to the applied [`renderer`](#kitrenderrendererroute-state)
     2. all `transform` calls
 
-End the chain with `kit.output()`.
+End the pipeline with `kit.output()`.
 
 ## API
 This section provides documentation on how each function in Stakit works. It's intended to be a technical reference.
@@ -126,7 +126,7 @@ They're called after the rendered content has been replaced in the HTML.
 See [Transforms](#transforms) for more information.
 
 ### `kit.output(writerObject)`
-Starts the build chain and ends it with passing all the routes to `writerObject.write({ destination, stream })`. Returns a `Promise` that waits until all files (routes and static) has been completely written.
+Starts the build pipeline and ends it with passing all the routes to `writerObject.write({ destination, stream })`. Returns a `Promise` that waits until all files (routes and static) has been completely written.
 
 By default it uses a Writer that outputs the site to the ``./public`` directory.
 
