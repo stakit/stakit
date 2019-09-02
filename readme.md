@@ -1,12 +1,14 @@
 # stakit
 **A modular toolkit for building static websites**
 
-<a href="https://nodejs.org/api/documentation.html#documentation_stability_index">
-  <img src="https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square" alt="Stability"/>
-</a>
-<a href="https://www.npmjs.com/package/stakit">
-  <img src="https://img.shields.io/npm/v/stakit.svg?style=flat-square" alt="NPM version"/>
-</a>
+<div>
+  <a href="https://nodejs.org/api/documentation.html#documentation_stability_index">
+    <img src="https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square" alt="Stability"/>
+  </a>
+  <a href="https://www.npmjs.com/package/stakit">
+    <img src="https://img.shields.io/npm/v/stakit.svg?style=flat-square" alt="NPM version"/>
+  </a>
+</div>
 
 <br />
 
@@ -17,7 +19,8 @@ _Stakit is still early in development, but you can take it and use it to see if 
 ## Features
 - **modular**: you never have what you don't need, but you can `npm install` it
 - **small api**: it only has 7 core methods, only 3 of them you must use
-- **no constrainst**: you are never limited by the features and templates of a static-site generator
+- **framework agnostic**: works with any framework that can output a string
+- **no constraints**: you are never limited by the features and templates of a static-site generator
 - **fast, memory efficient**: heavily using streams
 
 ## Installation
@@ -195,5 +198,6 @@ Have a look at the built-in [`stakit.writeFiles`](https://github.com/stakit/stak
 That's all about writers.
 
 ## See Also
-- [jalla](https://github.com/jallajs/jalla) - Lightning fast web compiler and server in one (also thanks for a lot of code snippets!)
+- [choo](https://github.com/choojs/choo) - sturdy 4kb frontend framework
 - [documentify](https://github.com/stackhtml/documentify) - Modular HTML bundler
+- [jalla](https://github.com/jallajs/jalla) - Lightning fast web compiler and server in one (also thanks for a lot of code snippets!)
