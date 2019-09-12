@@ -172,7 +172,7 @@ function lang (context) {
 
 Note: [`hstream`](https://github.com/stackhtml/hstream) is a very good friend!
 
-The `documentify` transform is wrapped in a function, so we can get the `context` when we need it, without messing with `documentify`'s API.
+The `documentify` transform is wrapped in a function, so we can get the `context` when we need it, without messing with `documentify`'s API. If you want to bypass this, you can simply return the `documentify` transform from a function.
 
 See what transforms come with Stakit in [`docs/transforms.md`](https://github.com/stakit/stakit/blob/master/docs/transforms.md).
 
