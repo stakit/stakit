@@ -174,7 +174,7 @@ Note: [`hstream`](https://github.com/stackhtml/hstream) is a very good friend!
 
 The `documentify` transform is wrapped in a function, so we can get the `context` when we need it, without messing with `documentify`'s API. If you want to bypass this, you can simply return the `documentify` transform from a function.
 
-See what transforms come with Stakit in [`docs/transforms.md`](https://github.com/stakit/stakit/blob/master/docs/transforms.md).
+See what transforms come with Stakit in [`transforms/readme.md`](https://github.com/stakit/stakit/blob/master/transforms/readme.md).
 
 ## Writers
 Writers output the generated, transformed static files. This can vary from outputting to the file-system, to putting them into a [Dat](https://github.com/datproject/dat) archive.
