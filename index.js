@@ -104,3 +104,6 @@ Object.keys(methods).forEach(function (key) {
 Object.keys(middlewares).forEach(function (key) {
   Stakit[key] = middlewares[key]
 })
+
+// export the transforms object
+Stakit.transforms = require('./transforms')

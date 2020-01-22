@@ -1,7 +1,9 @@
 ## Built-in Transforms
 
 ```javascript
-var transform = require('stakit/transforms')
+var stakit = require('stakit')
+var transforms = stakit.transforms
+// or
 var { lang, meta } = require('stakit/transforms')
 ```
 
