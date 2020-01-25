@@ -26,7 +26,8 @@ function Stakit () {
     _middlewares: [],
     _transforms: [],
     _html: TEMPLATE,
-    _selector: 'body'
+    _selector: 'body',
+    _buildId: null,
   }
 
   this._routesReducer = null
@@ -47,6 +48,9 @@ Stakit.prototype.render = function (renderer) {
 
 Stakit.prototype.output = async function (writer) {
   writer = writer || middlewares.writeFiles(path.join(process.cwd(), 'public'))
+
+  // generate build id
+  this._context._buildId = new Date().getTime()
 
   var self = this
   // check all required values
@@ -90,6 +94,9 @@ Stakit.prototype.output = async function (writer) {
       await writer.write(file)
     })
   )
+
+  // clean the build id
+  this._context._buildId = null
 }
 
 // dynamically add public methods
